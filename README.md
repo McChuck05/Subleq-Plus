@@ -13,13 +13,13 @@ If an outfile is named, the parser will create a compiled code file that can be 
 
  A B C ::=   [B] -= [A]; if [B] <= 0, goto C (standard Subleq)
  
- A B   ::>>   A B ? ::= [B] -= [A], goto next
+ A B   ::>>   A B ? ::= [B] -= [A]; goto next
  
- A     ::>>   A A ? ::= [A] = 0, goto next
+ A     ::>>   A A ? ::= [A] = 0; goto next
  
- A !   ::=   print [A], goto next
+ A !   ::=   print [A]; goto next
  
- ! B   ::=   input [B], goto next
+ ! B   ::=   input [B]; goto next
  
  A A ! ::=   halt
  
