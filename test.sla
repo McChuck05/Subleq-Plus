@@ -1,0 +1,65 @@
+# Hello world! via direct and indirect Subleq addressing
+# Taken with modifications from http://mazonka.com/subleq/
+# Ported from Chris Lloyd with modifications by McChuck
+
+# @ is the current address
+# ? is the next address
+# ! is -1 used for input, output, or halt
+ # * at the beginning of a label is an indirect pointer, shows up as a negative number
+
+ # This should print two messages, prompt input, then print the keyboard character pressed
+
+  # p is the pointer, a is the address
+Direct: a;                  # zero a
+p Z; Z a;                   # move p to a
+Z;                          # zero Z
+a:0 !                       # print a
+m1 p;                       # advance pointer
+ #check if pointer reaches E
+a; E Z; Z a; Z;             # move E to a
+p a Indirect                # if pointing at address E, go to indirect
+ Z Z Direct                  # restart direct loop
+
+ . p:H Z:0 m1:-1             # you have to place literals into memory as data
+. H: "Hello, World!" 10  # 10 is newline
+. E:@                       # E refers to itself
+. Gms: 'Good morning, starshine!  The earth says, "Hello!"' 10 NL: 10
+. -5                        # anything 0 or less would do here
+. Gptr: Gms                 # point to the message
+
+Indirect: *Gptr !           # print
+m1 Gptr                     # advance the pointer
+Z *Gptr Prompt              # if pointing at <= 0, go to Prompt
+Z Z Indirect                # restart indirect loop
+
+. key: 0
+. query1: "Type any key > " 0
+. PrintPointer: query1
+. query2: "Type another key > " 0
+. PrintPointer2: query2
+
+Prompt: *PrintPointer !
+m1 PrintPointer
+Z *PrintPointer GetKey
+Z Z Prompt
+
+GetKey: ! key               # input a character (echo)
+confused !
+NL !                        # newline
+key !                       # print the character
+NL !
+
+Prompt2: *PrintPointer2 !
+m1 PrintPointer2
+Z *PrintPointer2 SilentKey
+Z Z Prompt2
+
+SilentKey: 0 key            # input a character (no echo)
+confused !
+NL !
+key !
+NL !
+Z Z !                       # Halt
+
+. confused: "?"
+# junk label test
