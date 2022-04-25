@@ -11,7 +11,7 @@ Usage:  python subleqp.py infile.sla [outfile.slc]
 
 If an outfile is named, the parser will create a compiled code file that can be run by the virtual machine.
 
- A B C ::=   [B] -= [A], if [B]<=0 goto C (standard Subleq)
+ A B C ::=   [B] -= [A], if [B] <=0 goto C (standard Subleq)
  
  A B   ::>>   A B ?  (B -= A, goto next)
  
