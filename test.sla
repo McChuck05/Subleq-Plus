@@ -1,0 +1,114 @@
+# Hello world! via indirect Subleq addressing
+# McChuck, September 2022
+
+# @ is the current address.
+# ? is the next address.
+# ! is 0, used for input, output, or halt.
+ # * at the beginning of a label is an indirect pointer, shows up as a negative number.
+ # The first number (address zero) is the program counter / instruction pointer, which MUST be set as appropriate.
+ # . is data
+ # label: is a label marker.
+ # 0 0 0 halts
+  # A 0 C prints the character in A.  If C = 1, prints a number, else prints a character.  C must be non zero.
+  # 0 B C gets a keyboard character, stores it in b without printing it.  C is irrelevant but non zero.
+  # Simple math (+-) in a label is allowed, as in Location+3 or @-6.
+# " and ' are for text, and MUST be closed, but can wrap around lines.
+
+
+ # This should print two lines, prompt input, then print the keyboard character pressed
+ # It will then print from a subroutine several times, which includes printing a number
+
+
+  Start                           # set instruction pointer
+. M1: -1
+. P1: 1
+. Z: 0
+. Temp: 0
+. Input: 0
+. CR: 10
+. Space: 32
+. Msg1_Ref: @+1
+. Msg1: "Good morning, starshine!" 10 'Earth says, "Hello!"' 10 0 -1
+. Msg2_Ref: ?
+. Msg2: "Hit any key: " 0 0     # extra 0 to line up code in 3 word units
+
+Start:
+Z *Msg1_Ref Next1
+*Msg1_Ref !
+M1 Msg1_Ref
+Z Z Start
+Next1:
+Z *Msg2_Ref Next2
+*Msg2_Ref !
+M1 Msg2_Ref
+Z Z Next1
+Next2:
+! Input
+Input !
+CR !
+
+# Text Loop Call
+TextToPrintPtr Temp
+Temp PrintText
+Temp
+Space !
+ReturnLocationPtr Temp
+Temp PrintReturn
+CR !
+Temp
+Z Z PrintLoop
+
+. TextToPrint: "Print loop test 1" 10 0
+. TextToPrintPtr: TextToPrint
+. ReturnLocationPtr: ReturnLocation
+ReturnLocation:
+
+TextToPrintPtr2 Temp
+Temp PrintText
+Temp
+ReturnLocation2Ptr Temp
+Temp PrintReturn
+Temp
+Z Z PrintLoop
+
+. TextToPrint2: "Print loop test 2" 10 0
+. TextToPrintPtr2: TextToPrint2
+. ReturnLocation2Ptr: @+1
+ReturnLocation2:
+
+TextToPrintPtr3 Temp
+Temp PrintText
+Temp
+ReturnLocation3Ptr Temp
+Temp PrintReturn
+Temp
+Z Z PrintLoop
+
+. TextToPrintPtr3: TextToPrint3
+. TextToPrint3: "These are the files that try men's souls.
+This is the second line of this quote test." 10 0
+. ReturnLocation3Ptr: ?
+ReturnLocation3:
+0 0 0   # Halt
+0 0 0
+
+PrintLoop:
+Z *PrintText PrintCleanup
+*PrintText !
+M1 PrintText
+Z Z PrintLoop
+# This is so you don't have to clear these variables before calling this routine each time.
+PrintCleanup:
+PrintText
+PrintReturnRef
+PrintReturn Temp
+Temp PrintReturnRef
+Temp
+PrintReturn ! 1; CR !       # print the return address
+PrintReturn
+Z Z *PrintReturnRef
+. PrintText: 0
+. PrintReturn: 0
+. PrintReturnRef: 0
+
+
