@@ -11,7 +11,7 @@ The parser and VM were taken from Chris Loyd https://github.com/cjrl/Python-Subl
 
 If an outfile is named, the parser will create a compiled code file that can be run by the virtual machine.
 
-The first instruction must be the address to begin code execution.
+The first instruction **must** be the address to begin code execution.
 
  A B C ::=   [B] -= [A]; if [B] <= 0, goto C (standard Subleq)
  
